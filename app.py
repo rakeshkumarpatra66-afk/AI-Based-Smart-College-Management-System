@@ -1,4 +1,9 @@
-# app.py
+```python
+# ============================================================
+# AI SMART COLLEGE MANAGEMENT SYSTEM
+# Python + Streamlit + SQLite + Machine Learning
+# ============================================================
+
 import sqlite3
 import re
 from pathlib import Path
@@ -12,6 +17,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
+
 # ============================================================
 # PAGE CONFIGURATION
 # ============================================================
@@ -23,11 +29,17 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+
+# ============================================================
+# DATABASE PATH
+# ============================================================
+
 BASE_DIR = Path(__file__).resolve().parent
 DB_PATH = BASE_DIR / "students.db"
 
+
 # ============================================================
-# PREMIUM DESIGN
+# PROFESSIONAL DARK DESIGN
 # ============================================================
 
 st.markdown(
@@ -36,15 +48,13 @@ st.markdown(
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
     :root {
-        --navy: #102A43;
-        --navy-light: #173F5F;
-        --teal: #0D9488;
-        --teal-light: #CCFBF1;
-        --background: #F4F7FB;
-        --white: #FFFFFF;
-        --text: #243B53;
-        --muted: #627D98;
-        --border: #E2E8F0;
+        --background: #0B1120;
+        --surface: #151F32;
+        --surface2: #1C2A40;
+        --primary: #14B8A6;
+        --text: #F1F5F9;
+        --muted: #A7B5C8;
+        --border: #2A3A52;
     }
 
     html, body, [class*="css"] {
@@ -57,190 +67,249 @@ st.markdown(
     }
 
     [data-testid="stHeader"] {
-        background: rgba(244,247,251,0.95);
+        background: rgba(11, 17, 32, 0.95);
     }
 
     [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #102A43 0%, #173F5F 100%);
-        border-right: 1px solid #274C68;
+        background: linear-gradient(180deg, #101B30, #0B1120);
+        border-right: 1px solid var(--border);
     }
 
     [data-testid="stSidebar"] * {
-        color: #F0F9FF;
+        color: #F1F5F9;
     }
 
-    [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p {
-        color: #D9EAF5;
-    }
-
-    [data-testid="stSidebar"] div[role="radiogroup"] {
-        gap: 8px;
+    [data-testid="stSidebar"] p {
+        color: var(--muted);
     }
 
     [data-testid="stSidebar"] div[role="radiogroup"] label {
-        padding: 10px 12px;
+        padding: 10px;
         border-radius: 10px;
-        transition: background 0.2s ease;
+        transition: 0.2s ease;
     }
 
     [data-testid="stSidebar"] div[role="radiogroup"] label:hover {
-        background: rgba(255,255,255,0.12);
+        background: #1C2A40;
     }
 
     .brand-box {
-        padding: 22px 15px;
-        margin: 8px 0 25px;
-        background: rgba(255,255,255,0.08);
-        border: 1px solid rgba(255,255,255,0.12);
-        border-radius: 16px;
+        background: linear-gradient(135deg, #17263E, #0F766E);
+        border: 1px solid #2B5964;
+        border-radius: 18px;
+        padding: 22px 14px;
+        margin-bottom: 24px;
         text-align: center;
     }
 
     .brand-icon {
-        font-size: 40px;
-        margin-bottom: 8px;
+        font-size: 42px;
     }
 
     .brand-title {
-        font-size: 18px;
+        color: #FFFFFF;
+        font-size: 19px;
         font-weight: 800;
-        color: white;
-        margin: 0;
     }
 
     .brand-caption {
-        font-size: 11px;
         color: #99F6E4;
-        margin-top: 8px;
+        font-size: 11px;
         letter-spacing: 1.5px;
-        text-transform: uppercase;
     }
 
     .top-header {
-        background: linear-gradient(115deg, #102A43 0%, #173F5F 65%, #0D9488 100%);
-        padding: 28px 30px;
+        background: linear-gradient(120deg, #17263E, #0F766E);
+        padding: 30px;
+        border: 1px solid #2B5964;
         border-radius: 20px;
-        margin-bottom: 26px;
-        box-shadow: 0 12px 28px rgba(16,42,67,0.13);
+        margin-bottom: 25px;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.20);
     }
 
     .top-header h1 {
         color: #FFFFFF !important;
-        font-size: clamp(22px, 3vw, 34px);
+        font-size: clamp(23px, 3vw, 35px);
         font-weight: 800;
-        margin: 0 0 10px;
-        letter-spacing: -1px;
+        margin-bottom: 10px;
     }
 
     .top-header p {
-        color: #D9F7F4 !important;
+        color: #D1FAE5 !important;
         font-size: 14px;
-        margin: 0;
     }
 
     .section-heading {
-        font-size: 23px;
+        color: #F8FAFC;
+        font-size: 25px;
         font-weight: 800;
-        color: #102A43;
-        margin: 15px 0 5px;
+        margin: 15px 0 8px;
     }
 
     .section-description {
+        color: #A7B5C8;
         font-size: 13px;
-        color: #627D98;
-        margin-bottom: 20px;
+        margin-bottom: 22px;
     }
 
     div[data-testid="stMetric"] {
-        background: #FFFFFF;
-        border: 1px solid #E2E8F0;
+        background: linear-gradient(145deg, #17263E, #111C2F);
+        border: 1px solid #2A3A52;
+        border-top: 4px solid #14B8A6;
         border-radius: 16px;
-        padding: 20px 20px 16px;
-        box-shadow: 0 5px 18px rgba(16,42,67,0.045);
-        border-top: 4px solid #0D9488;
+        padding: 20px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        min-height: 115px;
     }
 
-    div[data-testid="stMetricLabel"] {
-        color: #627D98;
+    div[data-testid="stMetricLabel"],
+    div[data-testid="stMetricLabel"] p {
+        color: #B7C5D8 !important;
         font-size: 13px;
         font-weight: 600;
     }
 
     div[data-testid="stMetricValue"] {
-        color: #102A43;
+        color: #FFFFFF !important;
+        font-size: 28px;
         font-weight: 800;
-    }
-
-    div[data-testid="stMetricDelta"] {
-        font-size: 12px;
     }
 
     .panel {
-        background: #FFFFFF;
-        border: 1px solid #E2E8F0;
+        background: #151F32;
+        border: 1px solid #2A3A52;
         border-radius: 16px;
-        padding: 22px;
+        padding: 20px;
         margin: 8px 0 18px;
-        box-shadow: 0 5px 18px rgba(16,42,67,0.035);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
     }
 
     .panel-title {
-        color: #102A43;
-        font-size: 17px;
+        color: #F8FAFC;
+        font-size: 18px;
         font-weight: 800;
-        margin-bottom: 5px;
+        margin-bottom: 7px;
     }
 
     .panel-subtitle {
-        color: #627D98;
-        font-size: 12px;
-        margin-bottom: 16px;
+        color: #A7B5C8;
+        font-size: 13px;
+        margin-bottom: 10px;
+    }
+
+    .stApp p {
+        color: #D5DEEA;
+    }
+
+    .stApp label {
+        color: #E2E8F0 !important;
     }
 
     div.stButton > button,
-    div.stFormSubmitButton > button {
-        background: #0D9488;
-        color: #FFFFFF;
-        border: 1px solid #0D9488;
+    div.stFormSubmitButton > button,
+    div.stDownloadButton > button {
+        background: linear-gradient(135deg, #0D9488, #14B8A6);
+        color: #FFFFFF !important;
+        border: none;
         border-radius: 10px;
-        padding: 10px 18px;
+        padding: 11px 18px;
         font-weight: 700;
-        transition: all 0.2s ease;
+        transition: 0.2s ease;
     }
 
     div.stButton > button:hover,
-    div.stFormSubmitButton > button:hover {
+    div.stFormSubmitButton > button:hover,
+    div.stDownloadButton > button:hover {
         background: #0F766E;
-        color: #FFFFFF;
-        border-color: #0F766E;
-        box-shadow: 0 5px 14px rgba(13,148,136,0.2);
+        color: #FFFFFF !important;
+        transform: translateY(-1px);
     }
 
     div[data-baseweb="input"] > div,
     div[data-baseweb="select"] > div,
     div[data-baseweb="textarea"] > div {
-        border-radius: 9px;
-        border-color: #CBD5E1;
+        background: #1C2A40 !important;
+        border: 1px solid #40516A !important;
+        border-radius: 10px !important;
+    }
+
+    div[data-baseweb="input"] input,
+    div[data-baseweb="textarea"] textarea {
+        background: transparent !important;
+        color: #FFFFFF !important;
+        -webkit-text-fill-color: #FFFFFF !important;
+    }
+
+    div[data-baseweb="input"] input::placeholder,
+    div[data-baseweb="textarea"] textarea::placeholder {
+        color: #94A3B8 !important;
+        -webkit-text-fill-color: #94A3B8 !important;
+    }
+
+    div[data-baseweb="select"] * {
+        color: #FFFFFF !important;
+    }
+
+    div[data-baseweb="popover"],
+    div[data-baseweb="menu"],
+    ul[role="listbox"] {
+        background: #17263E !important;
+    }
+
+    li[role="option"] {
+        background: #17263E !important;
+        color: #FFFFFF !important;
+    }
+
+    li[role="option"]:hover {
+        background: #0F766E !important;
+    }
+
+    [data-testid="stForm"] {
+        background: #151F32;
+        border: 1px solid #2A3A52;
+        border-radius: 18px;
+        padding: 24px;
     }
 
     [data-testid="stDataFrame"] {
-        border: 1px solid #E2E8F0;
+        border: 1px solid #2A3A52;
         border-radius: 12px;
         overflow: hidden;
     }
 
-    [data-testid="stForm"] {
-        background: #FFFFFF;
-        border: 1px solid #E2E8F0;
-        border-radius: 16px;
-        padding: 24px;
+    [data-testid="stAlert"] {
+        border-radius: 12px;
+    }
+
+    .prediction-card {
+        background: linear-gradient(145deg, #17263E, #111C2F);
+        border: 1px solid #2A3A52;
+        border-radius: 18px;
+        padding: 25px;
+        margin: 15px 0;
+    }
+
+    .prediction-label {
+        color: #A7B5C8;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+    }
+
+    .prediction-value {
+        color: #5EEAD4;
+        font-size: 32px;
+        font-weight: 800;
+        margin-top: 8px;
     }
 
     .status-good {
         display: inline-block;
         padding: 6px 12px;
-        background: #DCFCE7;
-        color: #166534;
+        background: #064E3B;
+        color: #A7F3D0;
         border-radius: 20px;
         font-size: 12px;
         font-weight: 700;
@@ -249,8 +318,8 @@ st.markdown(
     .status-warning {
         display: inline-block;
         padding: 6px 12px;
-        background: #FEF3C7;
-        color: #92400E;
+        background: #78350F;
+        color: #FDE68A;
         border-radius: 20px;
         font-size: 12px;
         font-weight: 700;
@@ -259,75 +328,42 @@ st.markdown(
     .status-danger {
         display: inline-block;
         padding: 6px 12px;
-        background: #FEE2E2;
-        color: #991B1B;
+        background: #7F1D1D;
+        color: #FECACA;
         border-radius: 20px;
         font-size: 12px;
         font-weight: 700;
     }
 
-    .prediction-card {
-        background: #FFFFFF;
-        border: 1px solid #E2E8F0;
-        border-radius: 18px;
-        padding: 26px;
-        margin: 18px 0;
-        box-shadow: 0 6px 20px rgba(16,42,67,0.06);
-    }
-
-    .prediction-label {
-        font-size: 12px;
-        font-weight: 700;
-        letter-spacing: 1.5px;
-        text-transform: uppercase;
-        color: #627D98;
-    }
-
-    .prediction-value {
-        font-size: 32px;
-        font-weight: 800;
-        color: #102A43;
-        margin-top: 8px;
-    }
-
     .footer {
-        margin-top: 45px;
-        padding: 22px 15px;
-        background: #102A43;
-        border-radius: 15px;
+        background: #151F32;
+        border: 1px solid #2A3A52;
+        border-radius: 16px;
+        padding: 22px;
+        margin-top: 40px;
         text-align: center;
     }
 
     .footer p {
-        color: #D9EAF5;
+        color: #A7B5C8;
         font-size: 12px;
-        margin: 4px;
     }
 
     .footer strong {
-        color: #99F6E4;
+        color: #5EEAD4;
     }
 
     @media (max-width: 768px) {
         .top-header {
-            padding: 22px 18px;
-            border-radius: 14px;
-        }
-
-        .top-header h1 {
-            font-size: 23px;
-        }
-
-        [data-testid="stMetric"] {
-            padding: 14px;
+            padding: 20px;
         }
 
         .panel {
             padding: 15px;
         }
 
-        [data-testid="stDataFrame"] {
-            overflow-x: auto;
+        div[data-testid="stMetric"] {
+            padding: 12px;
         }
     }
     </style>
@@ -335,15 +371,14 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+
 # ============================================================
 # DATABASE
-# Preserve the existing database path, schema, and records.
 # ============================================================
 
 def get_db():
     connection = sqlite3.connect(
         str(DB_PATH),
-        check_same_thread=False,
         timeout=30,
     )
     connection.row_factory = sqlite3.Row
@@ -367,9 +402,6 @@ def init_db():
         )
 
 
-init_db()
-
-
 def get_students():
     with get_db() as connection:
         return connection.execute(
@@ -379,44 +411,50 @@ def get_students():
 
 def students_dataframe():
     records = get_students()
+
+    columns = [
+        "id",
+        "name",
+        "email",
+        "department",
+        "attendance",
+        "assignment_marks",
+        "previous_marks",
+    ]
+
     if not records:
-        return pd.DataFrame(
-            columns=[
-                "id",
-                "name",
-                "email",
-                "department",
-                "attendance",
-                "assignment_marks",
-                "previous_marks",
-            ]
-        )
+        return pd.DataFrame(columns=columns)
 
     return pd.DataFrame([dict(row) for row in records])
 
 
+init_db()
+
+
 # ============================================================
-# MACHINE LEARNING
-# Preserve existing training data, classifier, and labels.
+# MACHINE LEARNING MODEL
 # ============================================================
 
 X = [
-    [95, 90, 92], [90, 85, 88], [85, 88, 85], [80, 80, 82],
-    [75, 75, 78], [70, 72, 74], [65, 68, 70], [60, 65, 63],
-    [55, 55, 58], [50, 45, 48], [92, 95, 96], [88, 89, 90],
-    [82, 84, 86], [78, 79, 80], [72, 73, 75], [68, 69, 68],
-    [62, 61, 65], [58, 58, 55], [45, 50, 45], [40, 35, 38],
-    [98, 98, 97], [93, 92, 94], [87, 86, 89], [81, 83, 84],
-    [76, 77, 79], [71, 70, 72], [66, 64, 66], [59, 57, 60],
-    [52, 49, 50], [48, 40, 42],
+    [95, 90, 92], [90, 85, 88], [85, 88, 85],
+    [80, 80, 82], [75, 75, 78], [70, 72, 74],
+    [65, 68, 70], [60, 65, 63], [55, 55, 58],
+    [50, 45, 48], [92, 95, 96], [88, 89, 90],
+    [82, 84, 86], [78, 79, 80], [72, 73, 75],
+    [68, 69, 68], [62, 61, 65], [58, 58, 55],
+    [45, 50, 45], [40, 35, 38], [98, 98, 97],
+    [93, 92, 94], [87, 86, 89], [81, 83, 84],
+    [76, 77, 79], [71, 70, 72], [66, 64, 66],
+    [59, 57, 60], [52, 49, 50], [48, 40, 42],
 ]
 
 y = [
-    "Good", "Good", "Good", "Good", "Good", "Good", "Average",
-    "Average", "Average", "Needs Improvement", "Good", "Good",
-    "Good", "Good", "Good", "Average", "Average", "Average",
-    "Needs Improvement", "Needs Improvement", "Good", "Good",
-    "Good", "Good", "Good", "Good", "Average", "Average",
+    "Good", "Good", "Good", "Good", "Good", "Good",
+    "Average", "Average", "Average", "Needs Improvement",
+    "Good", "Good", "Good", "Good", "Good", "Average",
+    "Average", "Average", "Needs Improvement",
+    "Needs Improvement", "Good", "Good", "Good", "Good",
+    "Good", "Good", "Average", "Average",
     "Needs Improvement", "Needs Improvement",
 ]
 
@@ -457,14 +495,14 @@ def section_heading(title, description=""):
 def plot_layout(fig, height=350):
     fig.update_layout(
         height=height,
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="#FFFFFF",
+        paper_bgcolor="#151F32",
+        plot_bgcolor="#151F32",
         font=dict(
             family="Inter, sans-serif",
-            color="#486581",
+            color="#D5DEEA",
             size=12,
         ),
-        margin=dict(l=15, r=15, t=35, b=15),
+        margin=dict(l=15, r=15, t=40, b=15),
         legend=dict(
             orientation="h",
             yanchor="bottom",
@@ -473,20 +511,30 @@ def plot_layout(fig, height=350):
             x=1,
         ),
     )
+
+    fig.update_xaxes(
+        gridcolor="#2A3A52",
+        zerolinecolor="#2A3A52",
+    )
+
+    fig.update_yaxes(
+        gridcolor="#2A3A52",
+        zerolinecolor="#2A3A52",
+    )
+
     return fig
 
 
 def attendance_status(value):
-    if value >= 75:
-        return "Eligible"
-    return "Low Attendance"
+    return "Eligible" if value >= 75 else "Low Attendance"
 
 
 def performance_prediction(attendance, assignment, previous):
     features = [[attendance, assignment, previous]]
-    prediction = model.predict(features)[0]
 
+    prediction = model.predict(features)[0]
     probabilities = model.predict_proba(features)[0]
+
     confidence = float(max(probabilities)) * 100
 
     return prediction, confidence
@@ -497,6 +545,7 @@ def performance_prediction(attendance, assignment, previous):
 # ============================================================
 
 with st.sidebar:
+
     st.markdown(
         """
         <div class="brand-box">
@@ -523,8 +572,8 @@ with st.sidebar:
     )
 
     st.markdown("---")
-
     st.markdown("**TECHNOLOGY STACK**")
+
     st.caption("🐍 Python")
     st.caption("🎨 Streamlit")
     st.caption("🗄️ SQLite")
@@ -552,7 +601,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Load existing database records.
+
 df = students_dataframe()
 
 
@@ -570,61 +619,41 @@ if page == "📊 Dashboard":
     total_students = len(df)
 
     avg_attendance = (
-        float(df["attendance"].mean())
-        if total_students
-        else 0.0
+        float(df["attendance"].mean()) if total_students else 0.0
     )
 
     avg_marks = (
         float(
-            (
-                df["assignment_marks"]
-                + df["previous_marks"]
-            ).mean() / 2
+            (df["assignment_marks"] + df["previous_marks"]).mean() / 2
         )
-        if total_students
-        else 0.0
+        if total_students else 0.0
     )
 
     eligible_students = (
-        int((df["attendance"] >= 75).sum())
-        if total_students
-        else 0
+        int((df["attendance"] >= 75).sum()) if total_students else 0
     )
 
-    metric_columns = st.columns(4)
+    col1, col2, col3, col4 = st.columns(4)
 
-    with metric_columns[0]:
-        st.metric(
-            "👨‍🎓 Total Students",
-            f"{total_students:,}",
-        )
+    with col1:
+        st.metric("👨‍🎓 Total Students", total_students)
 
-    with metric_columns[1]:
-        st.metric(
-            "📅 Avg. Attendance",
-            f"{avg_attendance:.1f}%",
-        )
+    with col2:
+        st.metric("📅 Avg. Attendance", f"{avg_attendance:.1f}%")
 
-    with metric_columns[2]:
-        st.metric(
-            "📚 Average Marks",
-            f"{avg_marks:.1f}%",
-        )
+    with col3:
+        st.metric("📚 Average Marks", f"{avg_marks:.1f}%")
 
-    with metric_columns[3]:
-        st.metric(
-            "🤖 ML Test Accuracy",
-            f"{model_accuracy:.1f}%",
-        )
+    with col4:
+        st.metric("🤖 ML Test Accuracy", f"{model_accuracy:.1f}%")
 
     st.markdown("<br>", unsafe_allow_html=True)
 
     if total_students:
 
-        left_chart, right_chart = st.columns(2)
+        left, right = st.columns(2)
 
-        with left_chart:
+        with left:
 
             st.markdown(
                 """
@@ -649,27 +678,28 @@ if page == "📊 Dashboard":
                 department_counts,
                 names="Department",
                 values="Students",
-                hole=0.62,
+                hole=0.60,
                 color_discrete_sequence=[
-                    "#102A43",
-                    "#0D9488",
+                    "#14B8A6",
                     "#38BDF8",
                     "#818CF8",
                     "#F59E0B",
                     "#F472B6",
+                    "#A78BFA",
                 ],
             )
 
             fig.update_traces(
                 textposition="inside",
-                textinfo="percent",
-                hole=0.62,
+                textinfo="percent+label",
             )
 
-            fig = plot_layout(fig, 350)
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(
+                plot_layout(fig),
+                use_container_width=True,
+            )
 
-        with right_chart:
+        with right:
 
             st.markdown(
                 """
@@ -703,25 +733,22 @@ if page == "📊 Dashboard":
                 color="Attendance Status",
                 text="Students",
                 color_discrete_map={
-                    "Eligible (75%+)": "#0D9488",
+                    "Eligible (75%+)": "#14B8A6",
                     "Low Attendance": "#F59E0B",
                 },
             )
 
-            fig.update_traces(
-                textposition="outside",
-                marker_line_width=0,
-            )
-
             fig.update_layout(
                 showlegend=False,
-                yaxis_title="Number of Students",
                 xaxis_title="",
+                yaxis_title="Number of Students",
                 yaxis=dict(rangemode="tozero"),
             )
 
-            fig = plot_layout(fig, 350)
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(
+                plot_layout(fig),
+                use_container_width=True,
+            )
 
         st.markdown(
             """
@@ -742,32 +769,32 @@ if page == "📊 Dashboard":
             color="department",
             size="attendance",
             hover_name="name",
-            hover_data={
-                "email": True,
-                "attendance": True,
-            },
+            hover_data=["email", "attendance"],
             labels={
                 "assignment_marks": "Assignment Marks",
                 "previous_marks": "Previous Marks",
                 "department": "Department",
                 "attendance": "Attendance (%)",
             },
+            color_discrete_sequence=px.colors.qualitative.Bold,
         )
 
         fig.update_layout(
-            xaxis=dict(range=[0, 100], title="Assignment Marks"),
-            yaxis=dict(range=[0, 100], title="Previous Marks"),
+            xaxis=dict(range=[0, 100]),
+            yaxis=dict(range=[0, 100]),
         )
 
-        fig = plot_layout(fig, 430)
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(
+            plot_layout(fig, 420),
+            use_container_width=True,
+        )
 
         st.markdown(
             """
             <div class="panel">
                 <div class="panel-title">🆕 Recently Registered Students</div>
                 <div class="panel-subtitle">
-                    Latest student records from your SQLite database
+                    Latest records saved in the SQLite database
                 </div>
             </div>
             """,
@@ -793,14 +820,20 @@ if page == "📊 Dashboard":
         )
 
     else:
+
         st.info(
-            "Your database currently contains no student records. "
-            "Register a student to populate the dashboard."
+            "No student records found. Open Register Student "
+            "to add your first student."
         )
 
+        if st.button("➕ Register Your First Student"):
+            st.session_state["navigate_register"] = True
+            st.rerun()
+
     st.caption(
-        f"Model accuracy is measured on the existing held-out sample test set: "
-        f"{model_accuracy:.1f}%. It is not a guarantee of real-world performance."
+        f"ML test accuracy: {model_accuracy:.1f}%. "
+        "This is based on the predefined sample dataset and is not "
+        "a guarantee of real-world prediction accuracy."
     )
 
 
@@ -812,19 +845,7 @@ elif page == "👨‍🎓 Register Student":
 
     section_heading(
         "Student Registration",
-        "Add a student record to your existing college database.",
-    )
-
-    st.markdown(
-        """
-        <div class="panel">
-            <div class="panel-title">📝 Student Information</div>
-            <div class="panel-subtitle">
-                Enter accurate academic and contact information.
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
+        "Add student information and academic records.",
     )
 
     departments = [
@@ -836,49 +857,78 @@ elif page == "👨‍🎓 Register Student":
         "Electronics Engineering",
     ]
 
+    st.markdown(
+        """
+        <div class="panel">
+            <div class="panel-title">👤 Personal Information</div>
+            <div class="panel-subtitle">
+                Enter the student's name and contact details.
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
     with st.form("student_registration", clear_on_submit=True):
 
-        col1, col2 = st.columns(2)
+        col1, col2 = st.columns(2, gap="large")
 
         with col1:
             name = st.text_input(
-                "Student Full Name *",
-                placeholder="Enter full name",
+                "Full Name *",
+                placeholder="e.g. Rahul Sharma",
                 max_chars=100,
             )
 
+        with col2:
             email = st.text_input(
                 "Email Address *",
-                placeholder="student@example.com",
+                placeholder="e.g. rahul@gmail.com",
                 max_chars=254,
             )
 
-            department = st.selectbox(
-                "Department *",
-                departments,
-                index=None,
-                placeholder="Select department",
-            )
+        department = st.selectbox(
+            "Academic Department *",
+            departments,
+            index=None,
+            placeholder="Choose a department",
+        )
 
-        with col2:
+        st.markdown(
+            """
+            <div class="panel">
+                <div class="panel-title">📚 Academic Information</div>
+                <div class="panel-subtitle">
+                    Enter attendance and academic marks.
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        col3, col4, col5 = st.columns(3, gap="medium")
+
+        with col3:
             attendance = st.number_input(
-                "Attendance (%) *",
+                "Attendance (%)",
                 min_value=0.0,
                 max_value=100.0,
                 value=75.0,
-                step=0.5,
+                step=1.0,
             )
 
+        with col4:
             assignment = st.number_input(
-                "Assignment Marks *",
+                "Assignment Marks",
                 min_value=0.0,
                 max_value=100.0,
                 value=0.0,
                 step=1.0,
             )
 
+        with col5:
             previous = st.number_input(
-                "Previous Marks *",
+                "Previous Marks",
                 min_value=0.0,
                 max_value=100.0,
                 value=0.0,
@@ -900,19 +950,20 @@ elif page == "👨‍🎓 Register Student":
         if not name or not email or not department:
             st.error("Please complete all required fields.")
 
-        elif not re.fullmatch(r"[^@\s]+@[^@\s]+\.[^@\s]+", email):
-            st.error("Enter a valid email address.")
-
         elif not any(character.isalpha() for character in name):
             st.error("Enter a valid student name.")
 
+        elif not re.fullmatch(r"[^@\s]+@[^@\s]+\.[^@\s]+", email):
+            st.error("Enter a valid email address.")
+
         else:
+
             try:
+
                 with get_db() as connection:
                     connection.execute(
                         """
-                        INSERT INTO students
-                        (
+                        INSERT INTO students (
                             name,
                             email,
                             department,
@@ -933,14 +984,14 @@ elif page == "👨‍🎓 Register Student":
                     )
 
                 st.success(
-                    f"Student '{name}' registered successfully!"
+                    f"Student {name} registered successfully!"
                 )
 
                 st.rerun()
 
             except sqlite3.IntegrityError:
                 st.error(
-                    "This email address already exists in the database."
+                    "This email already exists. Use a different email."
                 )
 
             except sqlite3.Error as exc:
@@ -948,35 +999,40 @@ elif page == "👨‍🎓 Register Student":
 
 
 # ============================================================
-# STUDENT RECORDS AND DELETE
+# STUDENT RECORDS
 # ============================================================
 
 elif page == "📋 Students":
 
     section_heading(
         "Student Records",
-        "Search, review and manage student records.",
+        "Search, review, export and manage student records.",
     )
 
     if not df.empty:
 
         search = st.text_input(
-            "🔍 Search students",
-            placeholder="Search by name, email or department",
+            "🔍 Search Students",
+            placeholder="Enter name, email or department",
         )
 
         filtered_df = df.copy()
 
         if search.strip():
+
+            search_text = search.strip()
+
             mask = (
                 filtered_df["name"].astype(str).str.contains(
-                    search.strip(), case=False, na=False
+                    search_text, case=False, na=False, regex=False
                 )
-                | filtered_df["email"].astype(str).str.contains(
-                    search.strip(), case=False, na=False
+                |
+                filtered_df["email"].astype(str).str.contains(
+                    search_text, case=False, na=False, regex=False
                 )
-                | filtered_df["department"].astype(str).str.contains(
-                    search.strip(), case=False, na=False
+                |
+                filtered_df["department"].astype(str).str.contains(
+                    search_text, case=False, na=False, regex=False
                 )
             )
 
@@ -994,8 +1050,8 @@ elif page == "📋 Students":
             }
         )
 
-        st.markdown(
-            f"**Showing {len(filtered_df)} of {len(df)} students**"
+        st.write(
+            f"Showing {len(filtered_df)} of {len(df)} students"
         )
 
         st.dataframe(
@@ -1007,7 +1063,7 @@ elif page == "📋 Students":
         csv_data = display_df.to_csv(index=False).encode("utf-8")
 
         st.download_button(
-            "⬇️ Export Visible Students to CSV",
+            "⬇️ Export Students to CSV",
             data=csv_data,
             file_name="student_records.csv",
             mime="text/csv",
@@ -1020,8 +1076,7 @@ elif page == "📋 Students":
             <div class="panel">
                 <div class="panel-title">🗑️ Delete Student</div>
                 <div class="panel-subtitle">
-                    Deletion permanently removes the selected record.
-                    Check the student details before confirming.
+                    Permanently delete a selected student record.
                 </div>
             </div>
             """,
@@ -1034,12 +1089,12 @@ elif page == "📋 Students":
         }
 
         selected_label = st.selectbox(
-            "Select a student",
+            "Select Student",
             list(options.keys()),
         )
 
         confirm_delete = st.checkbox(
-            "I confirm that I want to permanently delete this student."
+            "I confirm permanent deletion of this student."
         )
 
         if st.button(
@@ -1048,6 +1103,7 @@ elif page == "📋 Students":
         ):
 
             try:
+
                 with get_db() as connection:
                     connection.execute(
                         "DELETE FROM students WHERE id = ?",
@@ -1072,7 +1128,7 @@ elif page == "📅 Attendance":
 
     section_heading(
         "Attendance Management",
-        "Monitor attendance percentages and the 75% eligibility threshold.",
+        "Monitor attendance and eligibility status.",
     )
 
     if not df.empty:
@@ -1086,10 +1142,8 @@ elif page == "📅 Attendance":
         col2.metric("Eligible Students", eligible_count)
         col3.metric("Low Attendance", low_count)
 
-        st.markdown("<br>", unsafe_allow_html=True)
-
         attendance_filter = st.selectbox(
-            "Filter by attendance",
+            "Filter Attendance",
             [
                 "All Students",
                 "Eligible (75% and above)",
@@ -1101,9 +1155,9 @@ elif page == "📅 Attendance":
             ["id", "name", "department", "attendance"]
         ].copy()
 
-        attendance_df["Eligibility"] = attendance_df[
-            "attendance"
-        ].apply(attendance_status)
+        attendance_df["Eligibility"] = (
+            attendance_df["attendance"].apply(attendance_status)
+        )
 
         if attendance_filter == "Eligible (75% and above)":
             attendance_df = attendance_df[
@@ -1135,20 +1189,17 @@ elif page == "📅 Attendance":
                     max_value=100,
                     format="%.1f%%",
                 ),
-                "Eligibility": st.column_config.TextColumn(
-                    "Eligibility",
-                ),
             },
         )
 
         st.markdown(
             """
             <div class="panel">
-                <div class="panel-title">📌 Attendance Policy Indicator</div>
+                <div class="panel-title">📌 Attendance Policy</div>
                 <div class="panel-subtitle">
-                    This application uses 75% as the attendance threshold.
-                    Verify your institution's official rules before making
-                    academic eligibility decisions.
+                    This application uses 75% as the threshold.
+                    Confirm the official college policy before
+                    making eligibility decisions.
                 </div>
                 <span class="status-good">Eligible: 75% or above</span>
                 &nbsp;
@@ -1164,8 +1215,7 @@ elif page == "📅 Attendance":
             go.Histogram(
                 x=df["attendance"],
                 nbinsx=10,
-                marker_color="#0D9488",
-                opacity=0.9,
+                marker_color="#14B8A6",
                 name="Students",
             )
         )
@@ -1183,11 +1233,13 @@ elif page == "📅 Attendance":
             bargap=0.12,
         )
 
-        fig = plot_layout(fig, 350)
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(
+            plot_layout(fig, 350),
+            use_container_width=True,
+        )
 
     else:
-        st.info("No student attendance records are available yet.")
+        st.info("No attendance records are available yet.")
 
 
 # ============================================================
@@ -1198,7 +1250,7 @@ elif page == "🤖 AI Prediction":
 
     section_heading(
         "AI Student Performance Prediction",
-        "Estimate academic performance using the existing Random Forest model.",
+        "Estimate academic performance using a Random Forest classifier.",
     )
 
     st.markdown(
@@ -1206,8 +1258,7 @@ elif page == "🤖 AI Prediction":
         <div class="panel">
             <div class="panel-title">🧠 Prediction Engine</div>
             <div class="panel-subtitle">
-                Enter attendance and marks to estimate the student's
-                performance category.
+                Enter attendance and marks to estimate a performance category.
             </div>
         </div>
         """,
@@ -1256,7 +1307,7 @@ elif page == "🤖 AI Prediction":
             <div class="panel">
                 <div class="panel-title">📊 Model Information</div>
                 <div class="panel-subtitle">
-                    Current machine learning configuration
+                    Machine learning configuration
                 </div>
             </div>
             """,
@@ -1273,11 +1324,6 @@ elif page == "🤖 AI Prediction":
         st.write("**Input Features:** 3")
         st.write("**Output Categories:** 3")
 
-        st.caption(
-            "Accuracy is calculated using the existing sample dataset "
-            "and held-out test split."
-        )
-
     if predict_clicked:
 
         prediction, confidence = performance_prediction(
@@ -1293,7 +1339,7 @@ elif page == "🤖 AI Prediction":
             <div class="panel">
                 <div class="panel-title">✨ Prediction Results</div>
                 <div class="panel-subtitle">
-                    The estimated performance category for the supplied inputs
+                    Estimated performance category for the supplied inputs.
                 </div>
             </div>
             """,
@@ -1302,19 +1348,19 @@ elif page == "🤖 AI Prediction":
 
         result_col, confidence_col = st.columns(2)
 
+        if prediction == "Good":
+            status_class = "status-good"
+            status_message = "Positive performance category"
+
+        elif prediction == "Average":
+            status_class = "status-warning"
+            status_message = "Moderate performance category"
+
+        else:
+            status_class = "status-danger"
+            status_message = "Additional academic support may help"
+
         with result_col:
-
-            if prediction == "Good":
-                status_class = "status-good"
-                status_message = "Positive performance category"
-
-            elif prediction == "Average":
-                status_class = "status-warning"
-                status_message = "Moderate performance category"
-
-            else:
-                status_class = "status-danger"
-                status_message = "Additional academic support may help"
 
             st.markdown(
                 f"""
@@ -1323,9 +1369,7 @@ elif page == "🤖 AI Prediction":
                     <div class="prediction-value">{prediction}</div>
                     <br>
                     <span class="{status_class}">{prediction}</span>
-                    <p style="color:#627D98;margin-top:18px;">
-                        {status_message}
-                    </p>
+                    <p>{status_message}</p>
                 </div>
                 """,
                 unsafe_allow_html=True,
@@ -1337,12 +1381,12 @@ elif page == "🤖 AI Prediction":
                 f"""
                 <div class="prediction-card">
                     <div class="prediction-label">
-                        Model Class Probability
+                        Highest Class Probability
                     </div>
                     <div class="prediction-value">{confidence:.1f}%</div>
-                    <p style="color:#627D98;margin-top:12px;">
-                        Highest probability among the model's output classes.
-                        This is not a guarantee of prediction correctness.
+                    <p>
+                        This represents the model's highest class probability,
+                        not a guarantee that the prediction is correct.
                     </p>
                 </div>
                 """,
@@ -1373,7 +1417,7 @@ elif page == "🤖 AI Prediction":
             ),
             color="Performance Category",
             color_discrete_map={
-                "Good": "#0D9488",
+                "Good": "#14B8A6",
                 "Average": "#F59E0B",
                 "Needs Improvement": "#EF4444",
             },
@@ -1381,18 +1425,23 @@ elif page == "🤖 AI Prediction":
 
         fig.update_layout(
             showlegend=False,
-            xaxis=dict(range=[0, 100], title="Model Probability (%)"),
+            xaxis=dict(
+                range=[0, 100],
+                title="Model Probability (%)",
+            ),
             yaxis_title="",
         )
 
-        fig = plot_layout(fig, 280)
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(
+            plot_layout(fig, 280),
+            use_container_width=True,
+        )
 
         st.warning(
-            "Educational estimate only. The model uses a small, predefined "
-            "sample dataset, not a validated model trained on the complete "
-            "student database. Its predictions and probabilities should not "
-            "be treated as verified academic outcomes."
+            "Educational estimate only. This model uses a small, predefined "
+            "sample dataset. It has not been validated on the complete "
+            "student database and should not be treated as a verified "
+            "academic outcome."
         )
 
 
@@ -1404,9 +1453,10 @@ st.markdown(
     """
     <div class="footer">
         <p><strong>AI Smart College Management System</strong></p>
-        <p>Developed for AI/ML Internship Project</p>
+        <p>AI/ML Internship Project</p>
         <p>Python · Streamlit · SQLite · Scikit-learn · Plotly</p>
     </div>
     """,
     unsafe_allow_html=True,
 )
+```
