@@ -758,7 +758,13 @@ elif page == "Register Student":
 
         st.divider()
 
-        st.markdown("### Academic Information")
+        st.markdown(
+""" <h3 style="color: #000000 !important; margin-bottom: 15px;">
+Academic Information </h3>
+""",
+unsafe_allow_html=True
+)
+
 
         col3, col4, col5 = st.columns(3)
 
