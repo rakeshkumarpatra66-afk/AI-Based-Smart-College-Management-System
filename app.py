@@ -184,6 +184,14 @@ st.markdown(
             padding: 14px;
         }
     }
+    ```
+/* Academic Information heading color fix */
+.stForm h3 {
+    color: #000000 !important;
+    -webkit-text-fill-color: #000000 !important;
+}
+```
+
     </style>
     """,
     unsafe_allow_html=True
