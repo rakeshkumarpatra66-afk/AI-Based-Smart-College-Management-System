@@ -712,7 +712,6 @@ if page == "Dashboard":
     else:
         st.info("No students have been registered yet.")
 
-
 # ==========================================================
 # REGISTER STUDENT
 # ==========================================================
@@ -758,13 +757,23 @@ elif page == "Register Student":
 
         st.divider()
 
-    st.markdown(
-    '<h3 style="color: black !important;">Academic Information</h3>',
-    unsafe_allow_html=True
-)
+        # Academic Information heading: black on laptop and mobile
+        st.markdown(
+            """
+            <h3 style="
+                color: #000000 !important;
+                font-weight: 700;
+                margin-top: 0;
+                margin-bottom: 15px;
+            ">
+                Academic Information
+            </h3>
+            """,
+            unsafe_allow_html=True
+        )
 
-        with st.container():
-    col3, col4, col5 = st.columns(3)
+        col3, col4, col5 = st.columns(3)
+
         with col3:
             attendance = st.number_input(
                 "Attendance (%)",
@@ -853,8 +862,6 @@ elif page == "Register Student":
                 st.error(
                     f"Database error: {error}"
                 )
-
-
 # ==========================================================
 # VIEW AND DELETE STUDENTS
 # ==========================================================
