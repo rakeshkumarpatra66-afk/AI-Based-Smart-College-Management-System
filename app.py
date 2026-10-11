@@ -32,74 +32,84 @@ DB_PATH = BASE_DIR / "students.db"
 
 
 # ==========================================================
-# PREMIUM UI DESIGN
+# PREMIUM UI DESIGN - BACKGROUND COLOR ONLY
 # ==========================================================
 
-NAVY = "#142B4A"
-TEAL = "#13B8A6"
+NAVY = "#30205A"
+TEAL = "#8B5CF6"
 WHITE = "#FFFFFF"
-BG = "#F3F6FB"
+BG = "#F4F1FF"
 TEXT = "#26374A"
-
 
 st.markdown(
     """
     <style>
+
+    /* Main Background */
     .stApp {
-        background-color: #F3F6FB;
+        background-color: #F4F1FF;
     }
 
+    /* Sidebar Background */
     [data-testid="stSidebar"] {
-        background-color: #142B4A;
+        background-color: #30205A;
     }
 
     [data-testid="stSidebar"] * {
-        color: white;
+        color: #FFFFFF;
     }
 
+    /* Page Spacing */
     .block-container {
         padding-top: 1.5rem;
         padding-bottom: 2rem;
         max-width: 1500px;
     }
 
+    /* Header Background */
     .hero {
-        background: linear-gradient(135deg, #142B4A, #245477);
+        background: linear-gradient(
+            135deg,
+            #30205A,
+            #7048B8,
+            #9673D6
+        );
         padding: 30px;
         border-radius: 20px;
         margin-bottom: 25px;
-        box-shadow: 0 8px 24px rgba(20,43,74,0.12);
+        box-shadow: 0 8px 24px rgba(48, 32, 90, 0.15);
     }
 
     .hero h1 {
-        color: white;
+        color: #FFFFFF;
         font-size: clamp(25px, 3vw, 36px);
         font-weight: 800;
         margin-bottom: 8px;
     }
 
     .hero p {
-        color: #DCEAF7;
+        color: #EDE5FF;
         font-size: 15px;
         margin-bottom: 0;
     }
 
     .eyebrow {
-        color: #40E0D0;
+        color: #D8C5FF;
         font-size: 12px;
         font-weight: 800;
         letter-spacing: 2px;
         margin-bottom: 10px;
     }
 
+    /* Dashboard Cards */
     .metric-card {
-        background: white;
-        border: 1px solid #E2E8F0;
-        border-top: 4px solid #13B8A6;
+        background: #FFFFFF;
+        border: 1px solid #E5DDF7;
+        border-top: 4px solid #8B5CF6;
         border-radius: 16px;
         padding: 20px;
         min-height: 130px;
-        box-shadow: 0 5px 18px rgba(20,43,74,0.05);
+        box-shadow: 0 5px 18px rgba(48, 32, 90, 0.06);
     }
 
     .metric-label {
@@ -109,15 +119,16 @@ st.markdown(
     }
 
     .metric-value {
-        color: #142B4A;
+        color: #30205A;
         font-size: clamp(22px, 2vw, 30px);
         font-weight: 800;
         margin-top: 12px;
         overflow-wrap: anywhere;
     }
 
+    /* Section Headings */
     .section-title {
-        color: #142B4A;
+        color: #30205A;
         font-size: 22px;
         font-weight: 800;
         margin-top: 20px;
@@ -125,33 +136,40 @@ st.markdown(
     }
 
     .section-subtitle {
-        color: #718096;
+        color: #756B8A;
         font-size: 14px;
         margin-bottom: 18px;
     }
 
+    /* Content Panels */
     .panel {
-        background: white;
+        background: #FFFFFF;
         padding: 22px;
-        border: 1px solid #E2E8F0;
+        border: 1px solid #E5DDF7;
         border-radius: 16px;
-        box-shadow: 0 5px 18px rgba(20,43,74,0.04);
+        box-shadow: 0 5px 18px rgba(48, 32, 90, 0.04);
     }
 
+    /* Footer */
     .footer {
-        background: #142B4A;
+        background: linear-gradient(
+            135deg,
+            #30205A,
+            #7048B8
+        );
         padding: 20px;
         border-radius: 14px;
         text-align: center;
         margin-top: 35px;
-        color: white;
+        color: #FFFFFF;
     }
 
+    /* Buttons */
     .stButton button,
     .stFormSubmitButton button {
-        background-color: #142B4A;
-        color: white;
-        border: 1px solid #142B4A;
+        background-color: #6C4AB6;
+        color: #FFFFFF;
+        border: 1px solid #6C4AB6;
         border-radius: 9px;
         font-weight: 700;
         min-height: 42px;
@@ -159,17 +177,25 @@ st.markdown(
 
     .stButton button:hover,
     .stFormSubmitButton button:hover {
-        background-color: #13B8A6;
-        color: white;
-        border-color: #13B8A6;
+        background-color: #30205A;
+        color: #FFFFFF;
+        border-color: #30205A;
     }
 
+    /* Data Tables */
     [data-testid="stDataFrame"] {
-        border: 1px solid #E2E8F0;
+        border: 1px solid #E5DDF7;
         border-radius: 12px;
         overflow: hidden;
     }
 
+    /* Academic Information Heading */
+    .stForm h3 {
+        color: #000000 !important;
+        -webkit-text-fill-color: #000000 !important;
+    }
+
+    /* Mobile Responsive */
     @media (max-width: 768px) {
         .block-container {
             padding-left: 12px;
@@ -184,13 +210,6 @@ st.markdown(
             padding: 14px;
         }
     }
-    ```
-/* Academic Information heading color fix */
-.stForm h3 {
-    color: #000000 !important;
-    -webkit-text-fill-color: #000000 !important;
-}
-```
 
     </style>
     """,
